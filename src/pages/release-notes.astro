@@ -1,0 +1,59 @@
+---
+import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
+import ReleaseNoteCard from '../components/ReleaseNoteCard.astro';
+
+type ReleaseNote = {
+  title: string;
+  date: string;
+  excerpt: string;
+  link: string;
+};
+
+// Import all MDX files from the releases content directory
+const noteImporters = import.meta.glob('../content/releases/*.mdx');
+
+// Load each MDX file, extract its frontmatter with a type assertion, and generate a slug from the file name
+const notesPromises: Promise<ReleaseNote>[] = Object.entries(noteImporters).map(async ([path, importer]) => {
+  const module = await importer() as { frontmatter: { title: string; date: string; excerpt: string } };
+  const fileName = path.split('/').pop();
+  const slug = fileName ? fileName.replace(/\.mdx$/, '') : '';
+  return { ...module.frontmatter, link: `/release-notes/${slug}` };
+});
+
+// Wait for all notes to load and sort them by date (descending) using getTime()
+const releaseNotes = (await Promise.all(notesPromises)).sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+---
+
+<StarlightPage frontmatter={{ 
+  title: 'Release Notes',
+  description: 'See what\'s new in the latest version of our app.',
+  tableOfContents: false,
+  template: 'splash',
+  }}>
+  <main class="release-notes-container">
+    <div class="release-notes-list">
+      {releaseNotes.map(note => (
+        <ReleaseNoteCard title={note.title} date={note.date} excerpt={note.excerpt} link={note.link} />
+      ))}
+    </div>
+  </main>
+  
+  <style>
+    .release-notes-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: var(--starlight-spacing-lg, 2rem);
+    }
+    
+    .release-notes-list {
+      display: grid;
+      gap: var(--starlight-spacing-lg, 1.5rem);
+    }
+    
+    @media (min-width: 768px) {
+      .release-notes-list {
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      }
+    }
+  </style>
+</StarlightPage> 
