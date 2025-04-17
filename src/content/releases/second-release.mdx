@@ -1,9 +1,80 @@
 ---
-title: "Second Release"
+title: "PetStore API v1.1 Release"
 date: "2024-03-15"
-excerpt: "This update includes new features and performance improvements."
+excerpt: "This update introduces improved search capabilities, payment processing, and several enhancements to the pet management system."
 ---
 
-# Second Release
+import { Card } from '@astrojs/starlight/components'
 
-Welcome to the second release. This update introduces several new features and performance improvements to enhance user experience. 
+## Service Advisories
+
+### Authentication Token Format Change
+The format of authentication tokens has been updated to include additional security features. Existing tokens will continue to work until April 15, 2024, but all applications should update to use the new token format. See the [migration guide](/docs/auth/token-migration) for details.
+
+### Pet Status Enumeration Change
+The pet status field now accepts a specific set of enumerated values: "available", "pending", "adopted", and "unavailable". The previous value "sold" has been deprecated and is now mapped to "adopted". Please update your applications accordingly.
+
+## Feature Highlights
+
+<Card>
+### Advanced Pet Search
+We've completely revamped the pet search functionality to make it more powerful and user-friendly. The new search API supports:
+
+- Full-text search across pet names and descriptions
+- Advanced filtering by multiple attributes (age, size, breed, etc.)
+- Geolocation-based search to find pets near a specific location
+- Sorting and pagination options for better results handling
+
+Example usage:
+```http
+GET /pets/search?query=friendly&species=dog&maxAge=5&location=90210&radius=25mi
+```
+
+This feature helps potential pet adopters quickly find their perfect match based on their specific preferences and location.
+
+### Integrated Payment Processing
+The store API now includes integrated payment processing capabilities. Developers can create and manage payments directly through our API, simplifying the checkout process for pet adoptions and product purchases.
+
+The payment API supports:
+- Multiple payment methods (credit cards, PayPal, etc.)
+- Automatic receipt generation
+- Refund and partial payment handling
+- Secure tokenization of payment information
+
+Example usage:
+```json
+POST /store/orders/{orderId}/payments
+{
+  "amount": 129.99,
+  "currency": "USD",
+  "method": "credit_card",
+  "paymentDetails": {
+    "tokenizedCard": "tok_visa_4242",
+    "saveForFuture": true
+  }
+}
+```
+</Card>
+
+<Card>
+### Pet Health Records API
+Pet health information can now be stored and retrieved through our API. This allows for seamless tracking of vaccinations, medical history, and special care instructions for each pet in the system.
+
+Veterinarians and pet care providers can access and update these records with proper authorization, ensuring that all pet health information is current and accurate.
+
+</Card>
+
+## Changes
+
+- Added advanced search endpoint `/pets/search` with multiple filtering options
+- Implemented geolocation-based search for pets
+- Added support for full-text search across pet records
+- Integrated payment processing with support for multiple payment methods
+- Created health records API endpoints for managing pet medical information
+- Enhanced authentication security with improved token format
+- Updated pet status enumeration values
+- Added API rate limit increase for authenticated users
+- Improved error responses with more detailed information
+- Optimized database queries for faster response times
+- Added Swagger UI for interactive API documentation
+- Fixed several bugs in the order processing workflow 

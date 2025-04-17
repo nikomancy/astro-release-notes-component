@@ -1,0 +1,58 @@
+{
+  "climb": "release-notes-enhancements",
+  "moves": [
+    {
+      "status": "complete",
+      "description": "Update content schema for release notes",
+      "details": "Modify src/content.config.ts to include a schema for the releases collection with proper types",
+      "rest": true
+    },
+    {
+      "status": "complete",
+      "description": "Update the ReleaseNoteCard component",
+      "details": "Ensure ReleaseNoteCard.astro properly accepts and uses the required content prop",
+      "rest": true
+    },
+    {
+      "status": "complete",
+      "description": "Refactor release-notes.astro page",
+      "details": "Update the page to use getCollection instead of import.meta.glob and fix typing issues",
+      "rest": true
+    },
+    {
+      "status": "complete",
+      "description": "Add excerpt display to release notes",
+      "details": "Update the UI to show the excerpt from each release note",
+      "rest": true
+    },
+    {
+      "status": "complete",
+      "description": "Test with existing content files",
+      "details": "Verify that existing release notes display correctly with proper sorting and formatting",
+      "rest": true
+    },
+    {
+      "status": "complete",
+      "description": "Improve content readability and line length",
+      "details": "Adjust the content width, line length, and typography to improve readability, especially for code blocks and long text sections",
+      "rest": true
+    },
+    {
+      "status": "complete",
+      "description": "Enhance visual hierarchy and spacing",
+      "details": "Improve the visual distinction between different sections (Service Advisories, Feature Highlights, Changes) and add proper spacing for better content breathing room",
+      "rest": true
+    },
+    {
+      "status": "todo",
+      "description": "Add responsive styling improvements",
+      "details": "Ensure the release notes display properly on different screen sizes",
+      "rest": true
+    },
+    {
+      "status": "todo",
+      "description": "Final review and cleanup",
+      "details": "Check for any remaining linter errors or styling issues"
+    }
+  ]
+} 

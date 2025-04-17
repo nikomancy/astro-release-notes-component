@@ -1,9 +1,53 @@
 ---
-title: "First Release"
+title: "PetStore API v1.0 Release"
 date: "2024-03-01"
-excerpt: "This is the inaugural release note marking the first of many updates."
+excerpt: "The inaugural release of our PetStore API includes core endpoints for pet management, store operations, and user authentication."
 ---
 
-# First Release
+# PetStore API v1.0 Release
 
-Welcome to the first release. This release introduces baseline features and improvements. 
+## Service Advisories
+
+None - This is our initial release.
+
+## Feature Highlights
+
+### Pet Management API
+The core Pet Management API allows developers to create, read, update, and delete pet records in the system. Each pet entity includes detailed information such as name, species, breed, age, and availability status. 
+
+Our pets endpoint supports filtering by status, allowing users to quickly find available pets for adoption. Additionally, pet records can be tagged with multiple categories for enhanced searchability.
+
+```http
+GET /pets?status=available
+```
+
+### Store Operations
+The Store Operations API enables inventory management and order processing. Store managers can track product inventory, process orders, and manage shipping details all through a unified interface.
+
+Each order contains a reference to the purchased pet, customer information, and delivery status. The API supports real-time order updates and webhook notifications for status changes.
+
+```json
+POST /store/orders
+{
+  "petId": 123,
+  "quantity": 1,
+  "shipDate": "2024-03-05T12:00:00Z",
+  "status": "placed"
+}
+```
+
+### User Authentication
+Secure user authentication provides personalized experiences for both pet store staff and customers. The API implements OAuth2 for secure access token management and role-based access control.
+
+Users can register, login, and manage their profiles with support for password recovery and email verification.
+
+## Changes
+
+- Created core `/pets` endpoint with CRUD operations
+- Implemented pet filtering by status and category
+- Added `/store/inventory` endpoint for stock management
+- Created `/store/orders` endpoint for order processing
+- Implemented user registration and authentication
+- Added API documentation using OpenAPI 3.0
+- Set up rate limiting for public endpoints
+- Implemented logging and monitoring 

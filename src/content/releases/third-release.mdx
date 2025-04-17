@@ -1,0 +1,103 @@
+---
+title: "PetStore API v1.2 Release"
+date: "2024-04-10"
+excerpt: "Introducing pet profiles, appointment scheduling, and webhook notifications with improved API performance and security enhancements."
+---
+import { Card } from '@astrojs/starlight/components'
+
+## Service Advisories
+
+### Base URL Change for Testing Environment
+The base URL for the testing environment has changed from `https://test-api.petstore.com` to `https://api-test.petstore.com`. All test integrations should be updated by May 1, 2024. The production environment URL remains unchanged.
+
+### Deprecation of Legacy Order Endpoints
+The legacy order endpoints (`/store/orders/legacy/*`) will be removed in the next release. Please migrate to the new order endpoints (`/store/orders/*`) as soon as possible. See the [migration guide](/docs/store/order-migration) for detailed instructions.
+
+## Feature Highlights
+
+<Card>
+### Enhanced Pet Profiles
+We've enhanced our pet profiles with a rich set of features to better showcase each pet's personality and characteristics. The new profiles include:
+
+- Support for multiple high-resolution photos and videos
+- Personality trait scoring to help match pets with potential owners
+- Behavioral assessment reporting
+- Care requirements and recommendations
+- Timeline of significant events in the pet's life
+
+These enhancements help potential adopters get a better understanding of each pet before making an adoption decision, leading to better matches and happier homes.
+
+Example usage:
+```http
+GET /pets/{petId}/profile
+```
+</Card>
+
+<Card>
+### Appointment Scheduling API
+Our new scheduling API allows customers to book appointments for pet viewings, veterinary services, grooming, and training sessions. The API handles:
+
+- Available time slot discovery
+- Booking creation and management
+- Automatic reminders and notifications
+- Staff assignment and resource allocation
+- Rescheduling and cancellation policies
+
+This system integrates with popular calendar platforms, making it easy for both staff and customers to manage their appointments.
+
+Example usage:
+```json
+POST /appointments
+{
+  "type": "pet_viewing",
+  "petId": 456,
+  "customerId": 789,
+  "proposedTimes": [
+    "2024-04-15T14:00:00Z",
+    "2024-04-16T10:30:00Z",
+    "2024-04-16T15:45:00Z"
+  ],
+  "notes": "Interested in adopting this golden retriever, would like to bring my children to meet the dog"
+}
+```
+</Card>
+
+<Card>
+### Webhooks for Real-time Updates
+Developers can now subscribe to real-time updates through our webhook system. Get notified immediately when events occur in the system, such as:
+
+- New pets added to inventory
+- Pet status changes (e.g., when a pet becomes available)
+- Order status updates
+- Appointment confirmations or changes
+- Health record updates
+
+This enables developers to build reactive applications that respond immediately to changes within the PetStore ecosystem.
+
+Example subscription:
+```javascript
+POST /webhooks
+{
+  "events": ["pet.status.changed", "order.status.changed"],
+  "targetUrl": "https://example.com/webhook-handler",
+  "secret": "your_webhook_signing_secret"
+}
+```
+</Card>
+
+## Changes
+
+- Added enhanced pet profiles with support for multiple media types
+- Implemented personality trait scoring for better pet-owner matching
+- Created appointment scheduling API for various pet services
+- Added webhook system for real-time event notifications
+- Improved API response times by 40% through database optimizations
+- Enhanced security with additional API key rotation capabilities
+- Added support for bulk operations on pet records
+- Implemented filter improvements for store inventory queries
+- Created new analytics endpoints for store performance monitoring
+- Updated OpenAPI documentation with more examples and use cases
+- Added new SDK versions for Python, JavaScript, and Java
+- Fixed bugs in user authentication flow
+- Improved error handling for payment processing
+- Updated testing environment base URL 

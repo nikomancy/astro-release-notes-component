@@ -1,27 +1,44 @@
 ---
 import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
 import ReleaseNoteCard from '../components/ReleaseNoteCard.astro';
+import { getCollection } from 'astro:content';
 
-type ReleaseNote = {
-  title: string;
-  date: string;
-  excerpt: string;
-  link: string;
-};
+// Get all release notes from the content collection
+const releaseEntries = await getCollection('releases');
 
-// Import all MDX files from the releases content directory
-const noteImporters = import.meta.glob('../content/releases/*.mdx');
+// Sort release notes by date (newest first)
+const sortedReleaseNotes = releaseEntries.sort(
+  (a, b) => b.data.date.getTime() - a.data.date.getTime()
+);
 
-// Load each MDX file, extract its frontmatter with a type assertion, and generate a slug from the file name
-const notesPromises: Promise<ReleaseNote>[] = Object.entries(noteImporters).map(async ([path, importer]) => {
-  const module = await importer() as { frontmatter: { title: string; date: string; excerpt: string } };
-  const fileName = path.split('/').pop();
-  const slug = fileName ? fileName.replace(/\.mdx$/, '') : '';
-  return { ...module.frontmatter, link: `/release-notes/${slug}` };
-});
+// Process the entries to ensure proper syntax highlighting
+const processedEntries = await Promise.all(
+  sortedReleaseNotes.map(async (entry) => {
+    const { Content } = await entry.render();
+    
+    // Process content to enhance code blocks with language indicators
+    return {
+      entry,
+      Content
+    };
+  })
+);
 
-// Wait for all notes to load and sort them by date (descending) using getTime()
-const releaseNotes = (await Promise.all(notesPromises)).sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+// Add custom script to process code blocks after render
+const enhanceCodeBlocks = `
+  document.addEventListener('DOMContentLoaded', () => {
+    const codeBlocks = document.querySelectorAll('pre');
+    codeBlocks.forEach(pre => {
+      const code = pre.querySelector('code');
+      if (code && code.className) {
+        const match = code.className.match(/language-([a-z]+)/);
+        if (match && match[1]) {
+          pre.setAttribute('data-language', match[1]);
+        }
+      }
+    });
+  });
+`;
 ---
 
 <StarlightPage frontmatter={{ 
@@ -29,31 +46,53 @@ const releaseNotes = (await Promise.all(notesPromises)).sort((a, b) => new Date(
   description: 'See what\'s new in the latest version of our app.',
   tableOfContents: false,
   template: 'splash',
-  }}>
-  <main class="release-notes-container">
-    <div class="release-notes-list">
-      {releaseNotes.map(note => (
-        <ReleaseNoteCard title={note.title} date={note.date} excerpt={note.excerpt} link={note.link} />
-      ))}
+}}>
+  <div class="release-notes-wrapper">
+    <div class="release-notes-container">
+      <div class="release-notes-list">
+        {processedEntries.map(({ entry, Content }) => (
+          <ReleaseNoteCard 
+            title={entry.data.title} 
+            date={entry.data.date.toISOString()} 
+            content={entry.data.excerpt}
+          >
+            <Content />
+          </ReleaseNoteCard>
+        ))}
+      </div>
     </div>
-  </main>
-  
-  <style>
-    .release-notes-container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: var(--starlight-spacing-lg, 2rem);
+  </div>
+</StarlightPage>
+
+<script set:html={enhanceCodeBlocks}></script>
+
+<style>
+  .release-notes-wrapper {
+    width: 100%;
+    padding: 0 1.5rem;
+    margin: 2rem 0;
+  }
+
+  .release-notes-container {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .release-notes-list {
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+    width: 100%;
+  }
+
+  @media (max-width: 768px) {
+    .release-notes-wrapper {
+      padding: 0 1rem;
+      margin: 1.5rem 0;
     }
     
     .release-notes-list {
-      display: grid;
-      gap: var(--starlight-spacing-lg, 1.5rem);
+      gap: 1.5rem;
     }
-    
-    @media (min-width: 768px) {
-      .release-notes-list {
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      }
-    }
-  </style>
-</StarlightPage> 
+  }
+</style> 
