@@ -3,8 +3,7 @@ title: "PetStore API v1.0 Release"
 date: "2024-03-01"
 excerpt: "The inaugural release of our PetStore API includes core endpoints for pet management, store operations, and user authentication."
 ---
-
-# PetStore API v1.0 Release
+import { Card } from '@astrojs/starlight/components'
 
 ## Service Advisories
 
@@ -12,6 +11,7 @@ None - This is our initial release.
 
 ## Feature Highlights
 
+<Card>
 ### Pet Management API
 The core Pet Management API allows developers to create, read, update, and delete pet records in the system. Each pet entity includes detailed information such as name, species, breed, age, and availability status. 
 
@@ -20,7 +20,9 @@ Our pets endpoint supports filtering by status, allowing users to quickly find a
 ```http
 GET /pets?status=available
 ```
+</Card>
 
+<Card>
 ### Store Operations
 The Store Operations API enables inventory management and order processing. Store managers can track product inventory, process orders, and manage shipping details all through a unified interface.
 
@@ -35,11 +37,14 @@ POST /store/orders
   "status": "placed"
 }
 ```
+</Card>
 
+<Card>
 ### User Authentication
 Secure user authentication provides personalized experiences for both pet store staff and customers. The API implements OAuth2 for secure access token management and role-based access control.
 
 Users can register, login, and manage their profiles with support for password recovery and email verification.
+</Card>
 
 ## Changes
 
